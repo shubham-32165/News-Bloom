@@ -1,0 +1,183 @@
+<!-- Local News Section -->
+<div class="local-news ">
+    <div class="section-header">
+        <span>Local news</span>
+        <a href="#">›</a>
+    </div>
+    
+    <div id="local-news-container">
+        <div id="local-news-loader" class="card" style="width: 100%; height: 120px; display: flex; align-items: center; justify-content: center;">
+            <div>loading....</div>
+        </div>
+        <!-- Local News Items will be dynamically inserted here -->
+    </div>
+    
+    <!-- Picks for You Section -->
+    <div class="picks-for-you">
+        <div class="section-header">
+            <span>Picks for you</span>
+            <a href="#">
+                <img src="/api/placeholder/16/16" alt="Info" />
+            </a>
+        </div>
+        <div id="picks-for-you-container">
+            <div id="picks-loader" class="card" style="width: 100%; height: 120px; display: flex; align-items: center; justify-content: center;">
+                <div>loading....</div>
+            </div>
+            <!-- Picks for You Items will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const darkMode = localStorage.getItem('dark-mode');
+        if (darkMode === '1'){
+            document.querySelector('.local-news').style.setProperty('text', 'white');
+            document.querySelector('.local-news').style.setProperty('background', '#2a2a2a');
+        }
+        else{
+            console.log('running')
+            document.querySelector('.local-news').style.setProperty('text', 'black');
+            document.querySelector('.local-news').style.setProperty('background', 'white');
+        }
+        document.querySelector('.local-news').style.setProperty('flex', '1');
+        document.querySelector('.local-news').style.setProperty('border-radius', '8px');
+        document.querySelector('.local-news').style.setProperty('padding', '20px');
+        document.querySelector('.local-news').style.setProperty('margin-bottom', '20px');
+        document.querySelector('.regular-news-item').style.setProperty('flex', '3');
+    }) 
+    let localNewsOffset = 0;
+    let picksOffset = 0;
+    const localNewsLimit = 2;
+    const picksLimit = 1;
+    let localNewsLoading = false;
+    let picksLoading = false;
+
+    let country = {{ session.get('country', 'India') | tojson }};
+    let state = {{ session.get('state', ['Delhi', 'India']) | tojson }}[0];
+
+
+    // Function to load local news
+    async function loadLocalNews() {
+        if (localNewsLoading) return;
+        
+        localNewsLoading = true;
+        document.getElementById("local-news-loader").style.display = "block";
+
+        try {
+            const res = await fetch(`/api/world/${country}/${state}?offset=${offset}&limit=${limit}`);
+            const data = await res.json();
+            const container = document.querySelector("#local-news-container");
+            console.log(data);
+            data.forEach(item => {
+                const newsItem = document.createElement('div');
+                const imaegeUrl = `/static/${item.pics}`;
+                newsItem.classList.add('regular-news-item');
+                
+                newsItem.innerHTML = `
+                    <div class="regular-news-content" onclick="window.location.href='/info/${item.channelName}/${item._id}'" style="cursor:pointer;">
+                        <h4>${item.headline}</h4>
+                        <div class="news-meta">
+                            <div class="news-source">
+                                <img src="${imaegeUrl}" alt="${item.channelName}" />
+                                <span>${item.channelName}</span>
+                            </div>
+                            <span class="news-time">• ${getTimeAgo(item.publishedAt)}</span>
+                        </div>
+                    </div>
+                    <!--<img src="${imaegeUrl}" width="5px" height="5px" alt="${item.headline}" class="regular-news-image" style="width: 100%; height: auto; max-width: 30px;"/>-->
+                `;
+                
+                container.appendChild(newsItem);
+            });
+            
+            // Remove loader once all items are loaded
+            if (data.length < localNewsLimit) {
+                document.getElementById("local-news-loader").style.display = "none";
+            }
+        } catch (error) {
+            console.error("Error loading local news:", error);
+        } finally {
+            document.getElementById("local-news-loader").style.display = "none";
+            localNewsLoading = false;
+        }
+    }
+
+    // Function to load picks for you
+    async function loadPicks() {
+        if (picksLoading) return;
+        
+        picksLoading = true;
+        document.getElementById("picks-loader").style.display = "block";
+
+        try {
+            const res = await fetch(`/api/picks?offset=${picksOffset}&limit=${picksLimit}`);
+            const data = await res.json();
+            const container = document.querySelector("#picks-for-you-container");
+            
+            data.forEach(item => {
+                const pickItem = document.createElement('div');
+                pickItem.classList.add('regular-news-item');
+                
+                pickItem.innerHTML = `
+                    <div class="regular-news-content">
+                        <h4>${item.headline}</h4>
+                        <div class="news-meta">
+                            <div class="news-source">
+                                <img src="/api/placeholder/16/16" alt="${item.channelName}" />
+                                <span>${item.channelName}</span>
+                            </div>
+                            <span class="news-time">• ${getTimeAgo(item.publishedAt)}</span>
+                        </div>
+                    </div>
+                    <img src="/api/placeholder/100/70" alt="${item.headline}" class="regular-news-image" />
+                `;
+                
+                container.appendChild(pickItem);
+            });
+
+            
+            // Remove loader once all items are loaded
+            if (data.length < picksLimit) {
+                document.getElementById("picks-loader").style.display = "none";
+            }
+        } catch (error) {
+            console.error("Error loading picks for you:", error);
+        } finally {
+            document.getElementById("picks-loader").style.display = "none";
+            picksLoading = false;
+        }
+    }
+
+    // Helper function to format time ago
+    function getTimeAgo(timestamp) {
+        const now = new Date();
+        const publishedDate = new Date(timestamp);
+        const diffInSeconds = Math.floor((now - publishedDate) / 1000);
+        
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} seconds ago`;
+        } else if (diffInSeconds < 3600) {
+            return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+        } else if (diffInSeconds < 86400) {
+            return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+        } else {
+            return `${Math.floor(diffInSeconds / 86400)} days ago`;
+        }
+    }
+
+    // Load news on page load
+    window.addEventListener("DOMContentLoaded", () => {
+        loadLocalNews();
+        loadPicks();
+    });
+
+    // Add scroll event listener for infinite scrolling (optional)
+    window.addEventListener("scroll", () => {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 200) {
+            loadPicks();
+        }
+    });
+</script>

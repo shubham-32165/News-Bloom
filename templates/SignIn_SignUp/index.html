@@ -1,0 +1,226 @@
+{% extends "base.jinja.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href=" {{ url_for('static', filename='css/SignIn_SignUp/index.css') }} " />
+{% endblock %}
+
+{% block content %}
+<div class="outer-container"
+  style="width: 100%; min-height: 100vh; background: linear-gradient(rgba(0, 179, 255, 0.6) 0%, rgba(0, 179, 255, 0.45) 25%, rgba(0, 179, 255, 0.35) 50%, rgba(0, 179, 255, 0.2) 75% )">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{category}}" style="position: absolute; right: 0; top: 50px; width: 300px; z-index: 10000;">
+    {{message}}</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+  <div class="container {{ 'sign-up-mode' if signUpOnLoad }}">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <!-- Sing In Form -->
+        <form action="" method="post" class="sign-in-form">
+          {{ signInForm.csrf_token(id="signInForm-csrf") }}
+          <input type="hidden" name="form-type" value="signInForm">
+          <h2 class="title">Sign in</h2>
+
+          <!-- singIn EMAIL -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signInForm.signInEmail.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                <path
+                  d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z" />
+              </svg>
+              {{ signInForm.signInEmail(id='signIn-form-Email') }}
+            </div>
+            {% if signInForm.signInEmail.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">{{
+              signInForm.signInEmail.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- singIn Password -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signInForm.signInPassword.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill"
+                viewBox="0 0 16 16">
+                <path
+                  d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+              </svg>
+              {{ signInForm.signInPassword(id="signIn-form-Password") }}
+              <div class="slash" style="position: absolute; right: 20px; bottom: 13px; cursor: pointer;"
+                onclick="showPassword('signIn-form-Password')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                </svg>
+                <span></span>
+              </div>
+            </div>
+            {% if signInForm.signInPassword.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">
+              {{signInForm.signInPassword.errors[0]}}</div>
+            {% endif %}
+          </div>
+
+          {{ signInForm.submit(class="btn solid", id="signInForm-submit") }}
+
+        </form>
+
+        <!-- Sing Up Form -->
+        <form action="" method="post" class="sign-up-form">
+          {{ signUpForm.csrf_token(id="signUpForm-csrf") }}
+          <input type="hidden" name="form-type" value="signUpForm">
+          <h2 class="title">Sign up</h2>
+          <!-- SignUp Username -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signUpForm.username.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+              </svg>
+              {{ signUpForm.username(id='signUp-form-Username') }}
+            </div>
+            {% if signUpForm.username.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">{{
+              signUpForm.username.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <!-- SignUp Email  -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signUpForm.signUpEmail.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                <path
+                  d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z" />
+              </svg>
+              {{ signUpForm.signUpEmail(id='signUp-form-Email') }}
+            </div>
+            {% if signUpForm.signUpEmail.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">{{
+              signUpForm.signUpEmail.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <!-- SignUp Password -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signUpForm.signUpPassword.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill"
+                viewBox="0 0 16 16">
+                <path
+                  d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+              </svg>
+              {{ signUpForm.signUpPassword(id='signUp-form-Password') }}
+              <div class="slash" style="position: absolute; right: 20px; bottom: 13px; cursor: pointer;"
+                onclick="showPassword('signUp-form-Password')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                </svg>
+                <span></span>
+              </div>
+            </div>
+            {% if signUpForm.signUpPassword.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">{{
+              signUpForm.signUpPassword.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <!-- SignUp Confirm Password -->
+          <div style="max-width: 380px; width: 100%;">
+            <div class="input-field {{ 'border-color-red' if signUpForm.confirmPassword.errors }}"
+              onclick="removeBorderOnClick(event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill"
+                viewBox="0 0 16 16">
+                <path
+                  d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+              </svg>
+              {{ signUpForm.confirmPassword(id='signUp-form-confirmPassword') }}
+              <div class="slash" style="position: absolute; right: 20px; bottom: 13px; cursor: pointer;"
+                onclick="showPassword('signUp-form-confirmPassword')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                </svg>
+                <span></span>
+              </div>
+            </div>
+            {% if signUpForm.confirmPassword.errors %}
+            <div class="errors"
+              style="color: red; font-size: 13px; padding-left: 15px; padding-right: 5px; line-height: 1.1;">{{
+              signUpForm.confirmPassword.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          {{ signUpForm.submit(class="btn", id="signUpForm-submit") }}
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel" style="gap: 25px">
+        <div class="content">
+          <h3>New here ?</h3>
+          <p style="text-align: left;">
+            Create an account to follow your favorite topics, get daily digests tailored to your interests, and never
+            miss a story that matters to you.
+          </p>
+          <button class="btn transparent" id="sign-up-btn" style="margin-top: 12px;">
+            Sign up
+          </button>
+        </div>
+        <img src="{{ url_for('static', filename='images/authentication-1-3.svg') }}" class="image" alt=""
+          style="scale: 0.93;" />
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>Welcome Back</h3>
+          <p>
+            You're already part of the story<br> Sign in to watch it grow, evolve, and bloom<br> around you.
+          </p>
+          <button class="btn transparent" id="sign-in-btn" style="margin-top: 15px;">
+            Sign in
+          </button>
+        </div>
+        <img src="{{ url_for('static', filename='images/video-call-1-55.svg') }}" class="image" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{url_for('static', filename='js/form.js')}}"></script>
+<script>
+  function removeBorderOnClick(e) {
+
+    if (e.target.tagName.toLowerCase() === "input") {
+      e.currentTarget.classList.remove('border-color-red');
+      const nextSibling = e.currentTarget.nextElementSibling;
+      if (nextSibling) {
+        nextSibling.classList.add('hidden')
+      }
+    }
+    console.log("hello")
+  }
+
+  setTimeout(() => {
+    const flashMessage = document.querySelector(".alert");
+    if(flashMessage)
+      flashMessage.style.display = "none"
+  }, 3000)
+</script>
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends "base.jinja.html" %}
+
+{% block content %}
+<style>
+    .newsShowCase-container {
+        max-width: 100%;
+        margin: 10px auto;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .newsShowCase-container .channelName {
+        font-size: 20px;
+    }
+
+    .newsShowCase-container .card {
+        display: flex;
+        flex-direction: column;
+        /* background-color: #2a2a2a; */
+        background-color: var(--background);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        height: min-content;
+        color: var(--text);
+    }
+
+    .newsShowCase-container .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .news-item {
+        margin-bottom: 15px;
+    }
+
+    .news-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .news-title {
+        color: var(--text);
+        font-weight: bold;
+        margin-bottom: 5px;
+        font-size: 12px;
+        line-height: 1.3;
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-color: red;
+    }
+
+    .news-title:hover {
+        text-decoration: underline;
+        text-decoration-color: orange;
+    }
+
+    .news-subtitle {
+        font-size: 14px;
+    }
+
+    .follow-btn {
+        /* background: #444; */
+        background-color: #b3ccff;
+        border: none;
+        border-radius: 10px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    .image-placeholder {
+        background-color: #555;
+        height: 50px;
+        width: 100%;
+        margin-top: 5px;
+        border-radius: 5px;
+    }
+
+    #showCaseAnimation {
+        user-select: none;
+        background-color: red;
+        height: 3px;
+        width: 0px;
+        margin-top: -8px;
+        margin-left: 15px;
+        transition: width 0.8s ease-in-out;
+    }
+
+    .popup {
+        position: fixed;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        /* background-color: #e74c3c; */
+        color: white;
+        padding: 5px 25px;
+        border-radius: 17px;
+        font-size: 16px;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 100000;
+        color: var(--background);
+        background-color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 25px;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .popup.show {
+        transition: opacity 1s ease-in-out, transform 1.3s ease-in;
+        opacity: 1;
+        /* transform: translateX(-50%) translateY(-65px); */
+        /* slide up */
+    }
+    .channelName{
+        font-size: 1.3rem;
+        font-weight: 700;   
+        text-decoration: none;
+        color: var(--text);
+        cursor: pointer;
+    }
+    .showCaseAnimation {
+        user-select: none;
+        background-color: red;
+        height: 2px;
+        width: 0px;
+        margin-top: -3px;
+        transition: width 0.5s ease-in-out;
+    }
+    .channel-wrapper:hover .showCaseAnimation{
+        width: 100%;
+    }
+</style>
+
+<section style="margin-top: 160px; display: flex; flex-direction: column; min-width: 80%; position: relative;">
+    <div style="width: max-content; position: relative;">
+        <h1 style="text-align: left; margin-left: 15px; user-select: none;">News Showcase</h1>
+        <div id="showCaseAnimation"></div>
+    </div>
+    <div id="popup" class="popup">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16" style="scale: 1.1;">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+          </svg>
+        Login to follow channel
+    </div>
+    <div class="newsShowCase-container">
+        <!-- card structure -->
+        <!-- <div class="card">
+            <div class="header">
+                <span>The Hindu</span>
+                <button class="follow-btn">★ Follow</button>
+            </div>
+            <div class="section-title">Top India News</div>
+            <div class="news-item">
+                <div class="news-title">Post Indus treaty hold, India triggers untimely water release...</div>
+                <div class="image-placeholder"></div>
+            </div>
+            <div class="news-item">
+                <div class="news-title">Supreme Court publishes assets of 21 judges...</div>
+                <div class="image-placeholder"></div>
+            </div>
+        </div> -->
+        <div id="loader" class="card loader" style="min-height: 350px; min-width: 350px; ">loading....</div>
+        <div id="loader" class="card loader" style="min-height: 350px; min-width: 350px;">loading....</div>
+        <div id="loader" class="card loader" style="min-height: 350px; min-width: 350px;">loading....</div>
+    </div>
+</section>
+
+<script>
+    function showPopup() {
+        const popup = document.getElementById("popup");
+        popup.classList.add("show");
+
+        setTimeout(() => {
+            popup.style = "transform: translateX(-50%) translateY(-65px);"
+        }, 1300);
+        setTimeout(() => {
+            popup.classList.remove("show");
+            popup.style = "transform: translateX(-50%);"
+        }, 2600);
+    }
+
+    let offset = 0;
+    const limit = 4;
+    let loading = false;
+
+    async function loadNews() {
+        if (loading) return;
+        loading = true;
+        document.querySelectorAll(".card.loader").forEach(ele=>ele.style.display='block');
+
+        const res = await fetch(`/api/newsShowCase?offset=${offset}&limit=${limit}`);
+        const data = await res.json();
+        
+        let following_newschannels = {{ session.get('following', {}).get('newschannels',[]) | tojson }}
+
+        const container = document.querySelector(".newsShowCase-container");
+
+        data.forEach(item => {
+            const card = document.createElement('div')
+            let articles = ""
+            card.classList.add('card')
+
+            for (let i = 0; i < Math.min(3, item.articles.length); i++) {
+                articles += `
+                    <div class="news-item">
+                        <a class="news-title" href="/info/${item.name}/${item.articles[i]._id}">${item.articles[i].headline}</a>
+                        <div class="image-placeholder"></div>
+                    </div>`
+        }
+        card.innerHTML =
+            `<div class="header">
+                <div class="channel-wrapper">
+                    <a class="channelName" href="/newsShowCase/${item.name}"> ${item.name} </a>
+                    <div class="showCaseAnimation"></div>
+                </div>
+                <button type="button" class="follow-btn" >★ <span class="${following_newschannels.includes(item.name) ? 'hidden' : ''}">Follow</span> </button>
+            </div>
+            ${articles}
+            `
+        card.querySelector('.follow-btn').addEventListener('click', function (event) { followbutton(event, item._id) })
+        container.appendChild(card);
+    });
+
+    offset += data.length;
+    if (data.length < limit) {
+        window.removeEventListener("scroll", handleScroll);
+    }
+    document.querySelectorAll(".card.loader").forEach(ele=>ele.style.display='none');
+    loading = false;
+    }
+    function handleScroll() {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 150) {
+            loadNews();
+        }
+    }
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("DOMContentLoaded", loadNews);
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => document.getElementById('showCaseAnimation').style.width = '97%', 200)
+        if (document.querySelector('body').classList.contains('dark-theme')) {
+            document.documentElement.style.setProperty('--text', 'white');
+            document.documentElement.style.setProperty('--background', '#2a2a2a');
+        }
+        else {
+            console.log('running')
+            document.documentElement.style.setProperty('--text', 'black');
+            document.documentElement.style.setProperty('--background', 'white');
+        }
+    })
+
+    async function followbutton(e, channelId) {
+
+        res = await fetch('/auth/currentlyLoggedIn')
+        data = await res.json()
+
+        if (data.statusCode !== 200) {
+            console.log("unauthorized")
+            showPopup();
+        }
+        else {
+            res = await fetch(
+                '/api/newsShowCase',
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ _id: channelId })
+                }
+            )
+            data = await res.json()
+            if (data['message'] === 'Follow')
+                if (e.target.tagName == "BUTTON")
+                    e.target.querySelector('span').classList.add('hidden')
+                else
+                    e.target.classList.add('hidden')
+            else
+                if (e.target.tagName == "BUTTON")
+                    e.target.querySelector('span').classList.remove('hidden')
+                else
+                    e.target.classList.remove('hidden')
+
+        }
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEWS</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/school.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-5.3.1.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navBar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/HomePage/index.css') }} ">
+</head>
+{% block style %}
+{% endblock %}
+<body class="{{ 'dark-theme' if request.cookies.get('dark-mode', '0') == '1' else '' }}" >
+    {% block nav %}
+        {% include "navBar.html" %}
+        <script src="{{ url_for('static', filename='js/navbar.js') }}" ></script>
+    {% endblock %}
+    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        {% block content required %}
+        {% endblock %}
+    </div>
+</body>
+<script>
+        window.addEventListener("DOMContentLoaded", () => {
+        if (document.querySelector('body').classList.contains('dark-theme')){
+            document.documentElement.style.setProperty('--text', 'white');
+            document.documentElement.style.setProperty('--background', '#2a2a2a');
+        }
+        else{
+            console.log('running')
+            document.documentElement.style.setProperty('--text', 'black');
+            document.documentElement.style.setProperty('--background', 'white');
+        }
+    })  
+</script>
+<script src="{{ url_for('static', filename='js/ScrollBar.js') }}"></script>
+{% block script %}
+{% endblock %}
+</html>

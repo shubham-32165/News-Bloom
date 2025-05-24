@@ -1,0 +1,90 @@
+{% extends "base.jinja.html" %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block style %}
+<style>
+    .follow-btn {
+        /* background: #444; */
+        background-color: #b3ccff;
+        border: none;
+        border-radius: 10px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    .showCaseAnimation {
+        user-select: none;
+        background-color: red;
+        height: 3px;
+        width: 0px;
+        margin-top: -8px;
+        transition: width 0.8s ease-in-out;
+    }
+    h3{
+        margin: 0;
+        margin-top: 10px;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section style="margin-top: 175px; display: flex; flex-direction: column; width: 75%;">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; padding-right: 20%;">
+        <div style="user-select: none; cursor: pointer;">
+            <div style="font-weight: 700; font-size: 2.7em; padding:0; margin: 0;">{{article.name}}</div>
+            <div class="showCaseAnimation"></div>
+        </div>
+        <button type="button" class="follow-btn" onclick="followButton(event)" >★ <span class="{{ 'hidden' if article.name in session.get('following', []) else '' }}">Follow</span> </button>
+    </div>
+    <div style="font-weight: 700; font-size: 2.2rem; user-select: none;"> {{ article.articles[0].headline }} </div>
+    <div style="font-size: 1rem"> {{ article.articles[0].text | replace('\n', '<br>') | replace('<h2>','<h3>') | replace('</h2>', '</h3>') |safe }} </div>
+    
+    <img src="{{article.articles[0].pics}}" alt="">
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    // string
+    const channelId = {{ article._id | tojson }}.$oid
+
+    async function followButton(e) {
+        res = await fetch('/auth/currentlyLoggedIn')
+        data = await res.json()
+
+        if (data.statusCode !== 200) {
+            alert("Sign In to follow Channels")
+        }
+        else {
+            res = await fetch(
+                '/api/newsShowCase',
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ _id: channelId })
+                }
+            )
+            data = await res.json()
+            if (data['message'] === 'Follow')
+                if (e.target.tagName == "BUTTON")
+                    e.target.querySelector('span').classList.add('hidden')
+                else
+                    e.target.classList.add('hidden')
+            else
+                if (e.target.tagName == "BUTTON")
+                    e.target.querySelector('span').classList.remove('hidden')
+                else
+                    e.target.classList.remove('hidden')
+
+        }
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => document.querySelector('.showCaseAnimation').style.width = '100%', 250)
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.jinja.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block style %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+    section {
+        display: flex;
+        justify-content: center;
+        /* background-color: #f1f1f1; */
+        background-color: var(--background);
+        font-family: 'Courier New', Courier, monospace;
+        margin: 0;
+        /* color: #222; */
+        color: var(--text);
+        height: 100vh;
+        width: 100%;
+        font-weight: 600;
+    }
+
+
+    .report-container {
+        /* background: white; */
+        background-color: var(--background);
+        max-width: 800px;
+        max-height: 550px;
+        margin-top: 3%;
+        padding: 40px;
+        border: 2px solid var(--text);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-header {
+        text-align: center;
+        margin-bottom: 30px;
+        
+    }
+
+    .report-header h1 {
+        font-size: 36px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+        font-weight: 900;
+    }
+
+    .file-number {
+        font-size: 18px;
+        /* color: #444; */
+        color: var(--text);
+        margin-top: 10px;
+    }
+
+    .missing-box {
+        border: 2px dashed var(--text);
+        padding: 20px;
+        margin: 30px 0;
+        /* background: #fffef5; */
+        background-color: var(--background);
+    }
+
+    .missing-box h2 {
+        margin-top: 0;
+        font-size: 24px;
+        color: #a00;
+        font-weight: 600;
+    }
+
+    .details {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .stamp {
+        text-align: center;
+        font-size: 60px;
+        color: #a00;
+        text-transform: uppercase;
+        font-weight: bold;
+        border: 8px double #a00;
+        display: inline-block;
+        padding: 0px 20px;
+        padding-top: 18px;
+        transform: rotate(-30deg);
+        position: absolute;
+        z-index: 10;
+        top: 43%;
+        left: 15%;
+        font-family: "Special Elite", system-ui;
+    }
+
+    .button-container {
+        text-align: center;
+        margin-top: 7%;
+    }
+
+    .go-home {
+        background-color: var(--background);
+        /* color: white; */
+        color: var(--text);
+        padding: 12px 25px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        border: 1px solid var(--text);
+    }
+
+    .go-home:hover {
+        background-color: #0000006b;
+    }
+    .details strong{
+        font-weight: 800;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section>
+    <div class="report-container" style="position: relative;">
+        <div class="report-header">
+            <h1>Missing Page Report</h1>
+            <div class="file-number">Case Filed at: {{ today.strftime('%B %d %Y, %I:%M %p') }}</div>
+        </div>
+
+        <div class="missing-box">
+            <h2>Status: Missing</h2>
+            <div class="details">
+                <p><strong>Subject:</strong> /article/you-were-looking-for</p>
+                <p><strong>Last Seen:</strong> Just before you clicked that link.</p>
+                <p><strong>Reported By:</strong> Concerned Reader</p>
+                <p><strong>Remarks:</strong> This page may have been moved, deleted, or never existed. If found, please
+                    return
+                    it to the editors immediately.</p>
+            </div>
+        </div>
+
+        <div class="button-container" style="position: relative;">
+            <a class="go-home" href="{{url_for('main.index')}}">Return to Home Page</a>
+        </div>
+        <div class="stamp">Witnessed: 404</div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

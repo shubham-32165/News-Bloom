@@ -1,0 +1,176 @@
+{% extends "base.jinja.html" %}
+
+{% block style %}
+
+<style>
+    section {
+        margin-top: 160px;
+        width: 75%;
+        /* height: 100%; */
+        background-color: var(--background);
+        padding: 1% 2%;
+        padding-bottom: 2%;
+        border: 1px solid var(--text);
+        border-radius: 15px;
+        display: flex;
+        gap: 2vh;
+        flex-direction: column;
+    }
+    .following-container{
+        border: 1px solid var(--text);
+        min-height: 170px;
+        border-radius: 20px;
+        padding: 1%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: max-content;
+        row-gap: 10px;
+        column-gap: 10px;
+    }
+    .headings{
+        font-size: 40px;
+        font-weight: 600;
+    }
+    .card{
+        width: auto;
+        height: 65px;
+        display: grid;
+        grid-template-columns: 0.5fr 1fr 0.1fr;
+        padding: 5px;
+        font-weight: 700;
+        font-size: 16px;
+        background-color: var(--background);
+        color: var(--text);
+        border: 1px solid var(--text);
+        cursor: pointer;
+    }
+    body.dark-theme .following-container{
+        background-color: #121212;
+    }
+    svg{
+        fill: var(--text)
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<section>
+    {% if session.get('following', None) %}
+    <div>
+        <div class="headings">States</div>
+        <div class="following-container">
+            {% if session['following'].get('states',[]) and (session['following'].get('states',[]) | length)!=0 %}
+                {% for state in session['following']['states'] %}
+                <div class="card" onclick='((event)=>newsChannel_redirect(event, {{ state | tojson }}))(event)'>
+                    <div style=" width: 100%; height: 100%; padding-right: 5px;">
+                        <div style="width: 100%; height: 100%; background-color: #555; border-radius: 6px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <div>{{state[0]}}</div>
+                    </div>
+                    <div>
+                        <button style="border: none; display: flex; background-color: transparent;" onclick='remove({{state|tojson}}, "states")'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div>No state followed</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+    <div class="headings">Countries</div>
+    <div class="following-container">
+        {% if session['following'].get('countries',[]) %}
+            {% for country in session['following']['countries'] %}
+                <div class="card" onclick='((event)=>country_redirect(event, {{country|tojson}}))(event)'>
+                    <div style=" width: 100%; height: 100%; padding-right: 3px;">
+                        <div style="width: 100%; height: 100%; background-color: #555; border-radius: 6px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <div>{{country}}</div>
+                    </div>
+                    <div>
+                        <button style="border: none; display: flex; background-color: transparent;" onclick='remove({{country|tojson}}, "countries")''>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div>No Country followed</div>
+        {% endif %}
+    </div>
+    </div>
+
+    <div>
+    <div class="headings">News Channels</div>
+    <div class="following-container">
+        {% if session['following'].get('newschannels',[]) %}
+            {% for channel in session['following']['newschannels'] %}
+            <div class="card" onclick='((event)=>newsChannel_redirect(event, {{ channel | tojson }}))(event)'>
+                <div style=" width: 100%; height: 100%; padding-right: 3px;">
+                    <div style="width: 100%; height: 100%; background-color: #555; border-radius: 6px;"></div>
+                </div>
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <div>{{channel}}</div>
+                </div>
+                <div>
+                    <button style="border: none; display: flex; background-color: transparent;" onclick='remove({{channel|tojson}}, "newschannels")'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                    </svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div>No NewsChannels followed</div>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    async function remove(name, category){
+        console.log(name)
+        res = await fetch(`/api/following`,{
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 'category': category, 'name': name })
+            }
+        )
+        window.location.reload()
+    }
+    function country_redirect(e, country){
+        console.log(country, e)
+        if(e.target.tagName === 'DIV'){
+            window.location.href = `http://127.0.0.1:5000/world/${country}`
+        }
+    }
+    function newsChannel_redirect(e, newsChannel){
+        if(e.target.tagName === 'DIV'){
+            window.location.href = `http://127.0.0.1:5000/newsShowCase/${newsChannel}`
+        }
+    }
+    function newsChannel_redirect(e, [state, country]){
+        if(e.target.tagName === 'DIV'){
+            window.location.href = `http://127.0.0.1:5000/world/${country}/${state}`
+        }
+    }
+
+</script>
+{% endblock %}

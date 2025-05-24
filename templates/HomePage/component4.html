@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Topics Layout</title>
+    <style>
+        :root {
+            --background-color: #121212;
+            --card-bg-color: #222222;
+            --text-color: #ffffff;
+            --secondary-text-color: #b0b0b0;
+            --border-radius: 12px;
+            --spacing: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        .header .subtext {
+            color: var(--secondary-text-color);
+            font-size: 14px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--secondary-text-color);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .customize-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background-color: var(--card-bg-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .topic-header {
+            padding: var(--spacing);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .topic-title {
+            font-size: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .news-item {
+            display: flex;
+            padding: var(--spacing);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-size: 15px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .news-source {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--secondary-text-color);
+        }
+
+        .source-logo {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .source-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .time-ago {
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .time-ago::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+        }
+
+        .news-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+
+        .news-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .market-data {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: var(--spacing);
+        }
+
+        .market-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .market-name {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .market-change {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .market-value {
+            font-size: 13px;
+            color: var(--secondary-text-color);
+        }
+
+        .negative {
+            color: #ff5252;
+        }
+
+        .positive {
+            color: #4caf50;
+        }
+
+        .footer {
+            font-size: 13px;
+            color: var(--secondary-text-color);
+            text-align: right;
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer a {
+            color: #64b5f6;
+            text-decoration: none;
+        }
+
+        .chevron-icon {
+            font-size: 20px;
+        }
+
+        .arrow-icon {
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Your topics</h1>
+                <div class="subtext">
+                    Recommended based on your interests
+                    <span class="info-icon">i</span>
+                </div>
+            </div>
+            <button class="customize-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="9" x2="20" y2="9"></line>
+                    <line x1="4" y1="15" x2="20" y2="15"></line>
+                    <line x1="10" y1="3" x2="8" y2="21"></line>
+                    <line x1="16" y1="3" x2="14" y2="21"></line>
+                </svg>
+                Customise
+            </button>
+        </div>
+
+        <div class="grid-container">
+            <!-- India Card -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <h2 class="topic-title">
+                        India
+                        <span class="chevron-icon">›</span>
+                    </h2>
+                </div>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">In Centre's Anti-Terror Outreach Teams, Only 1 Name Suggested By Congress</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="NDTV Logo">
+                            </div>
+                            NDTV
+                            <span class="time-ago">19 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">IMF issues strong warning, sets 11 new conditions for Pakistan amid heightened tensions with India</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Times of India Logo">
+                            </div>
+                            Times of India
+                            <span class="time-ago">5 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">'220 million honourable Muslims in India': Owaisi's message to Turkey on backing Pakistan</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Hindustan Times Logo">
+                            </div>
+                            By Sohil Sehran
+                            <span class="time-ago">Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+            </div>
+
+            <!-- Technology Card -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <h2 class="topic-title">
+                        Technology
+                        <span class="chevron-icon">›</span>
+                    </h2>
+                </div>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">iPhone 17, iPhone 17 Air, iPhone 17 Pro, iPhone 17 Pro Max Price In India, USA, Dubai, Color Options...</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Times Now Logo">
+                            </div>
+                            By Shubham Arora
+                            <span class="time-ago">9 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">Garena Free Fire MAX redeem codes for May 18: Win new prizes for free with daily rewards</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Economic Times Logo">
+                            </div>
+                            The Economic Times
+                            <span class="time-ago">8 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">Imperial Blue claims the B.T.C. Charitable Trust Trophy</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="The Hindu Logo">
+                            </div>
+                            The Hindu
+                            <span class="time-ago">Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+            </div>
+
+            <!-- Business Card -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <h2 class="topic-title">
+                        Business
+                        <span class="chevron-icon">›</span>
+                    </h2>
+                </div>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">With Nifty50 back above 25,000, May 19 becomes a crucial date for trend confirmation, Says...</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Economic Times Logo">
+                            </div>
+                            By Kshitij Anand
+                            <span class="time-ago">5 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <a href="#" class="news-item">
+                    <div class="news-content">
+                        <h3 class="news-title">Vodafone Idea seeks court help after govt rejects request on dues</h3>
+                        <div class="news-source">
+                            <div class="source-logo">
+                                <img src="/api/placeholder/20/20" alt="Moneycontrol Logo">
+                            </div>
+                            Moneycontrol
+                            <span class="time-ago">4 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-thumbnail">
+                        <img src="/api/placeholder/80/80" alt="News Thumbnail">
+                    </div>
+                </a>
+                <div class="market-data">
+                    <div class="market-item">
+                        <div class="market-name">Sensex</div>
+                        <div class="market-change negative">
+                            <span class="arrow-icon">↓</span>-0.24%
+                        </div>
+                        <div class="market-value">82,330.59</div>
+                    </div>
+                    <div class="market-item">
+                        <div class="market-name">NIFTY 50</div>
+                        <div class="market-change negative">
+                            <span class="arrow-icon">↓</span>-0.17%
+                        </div>
+                        <div class="market-value">25,019.80</div>
+                    </div>
+                    <div class="market-item">
+                        <div class="market-name">Nikkei 225</div>
+                        <div class="market-change negative">
+                            <span class="arrow-icon">↓</span>-0.00%
+                        </div>
+                        <div class="market-value">37,753.72</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>2 days ago</div>
+            <a href="#">Disclaimer</a>
+            <a href="#">More from Google Finance</a>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript functionality could be added here
+        // For example, to handle adding new news items dynamically
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const customizeBtn = document.querySelector('.customize-btn');
+            
+            customizeBtn.addEventListener('click', function() {
+                alert('Customize options would open here');
+            });
+            
+            // This is where you would add code to fetch and display real news data
+            // For example:
+            /*
+            function fetchNews() {
+                fetch('your-news-api-endpoint')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Process the data and add news items to the cards
+                        renderNewsItems(data);
+                    })
+                    .catch(error => console.error('Error fetching news:', error));
+            }
+            
+            function renderNewsItems(newsData) {
+                // Logic to render news items dynamically
+            }
+            
+            fetchNews();
+            */
+            
+            // You could also add code for topic navigation, filtering, etc.
+        });
+    </script>
+</body>
+</html>

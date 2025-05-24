@@ -1,0 +1,126 @@
+<div class="news-container ">
+    <!-- Main Content -->
+    <div class="content-section">
+        <!-- Resent Stories Section -->
+        <div class="main-news">
+            <div class="section-header">
+                <span>Recent stories</span>
+            </div>
+            <div id="resent-stories-container">
+                <div id="loader" class="card"
+                    style="width: 100%; height: 182px; display: flex; align-items: center; justify-content: center;">
+                    <div>loading....</div>
+                </div>
+                <!-- Resent Stories card -->
+                <!-- <div class="news-item" style="display: flex; flex-direction: row; gap: 15px;">
+                    <div style="height: 120px; width: 250px; background-color: #ccc; border-radius: 15px;"></div>
+                    <div class="featured-news-content">
+                        <h3>Hyderabad news: 17 killed in fire at Gulzar House near Charminar today, police say</h3>
+                        <div class="news-meta">
+                            <span>By Jocelyn F.</span>
+                        </div>
+                        <div class="news-meta">
+                            <div class="news-source">
+                                <img src="/api/placeholder/16/16" alt="Mint" />
+                                <span>Mint</span>
+                            </div>
+                            <span class="news-time">• 4 hours ago</span>
+                        </div>
+                    </div>
+                </div>    -->
+            </div>
+            <!-- Regular News Items -->
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const darkMode = localStorage.getItem('dark-mode');
+        if (darkMode === '1') {
+            document.querySelector('.main-news').style.setProperty('text', 'white');
+            document.querySelector('.main-news').style.setProperty('background', '#2a2a2a');
+        }
+        else {
+            console.log('running')
+            document.querySelector('.main-news').style.setProperty('text', 'black');
+            document.querySelector('.main-news').style.setProperty('background', 'white');
+        }
+        document.querySelector('.main-news').style.setProperty('flex', '2');
+        document.querySelector('.main-news').style.setProperty('border-radius', '8px');
+        document.querySelector('.main-news').style.setProperty('padding', '20px');
+        document.querySelector('.main-news').style.setProperty('margin-bottom', '20px');
+    })
+    let offset = 0;
+    const limit = 4;
+    let loading = false;
+
+    async function loadNews() {
+        if (loading) return;
+
+        loading = true;
+        document.getElementById("loader").style.display = "block";
+
+        const res = await fetch(`/api/world?offset=${offset}&limit=${limit}`);
+        const data = await res.json();
+        console.log("data", data);
+        const container = document.querySelector("#resent-stories-container");
+        let count = 0;
+        data.forEach(item => {
+            count++;
+            const card = document.createElement('div')
+            card.classList.add('news-item')
+            const imaegeUrl = `/static/${item.pics}`;
+            card.style = 'display: flex; flex-direction: row; gap: 15px;'
+            console.log(item)
+            card.innerHTML =
+                `<div onclick="window.location.href='/info/${item.channelName}/${item._id}'" class="news-item" style="display: flex; width: 100%; flex-direction: row; gap: 15px; flex-direction: row; justify-content: space-between;">
+                    <div style="height: 120px; min-width: 130px; background-color: white; border-radius: 15px;">
+                        <img src="${imaegeUrl}" alt="Centered Image" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="featured-news-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 class="headline" title="${item.headline}">${item.headline}</h4>
+                            <div class="news-meta">
+                        <span>${item.editorname}</span>
+                        </div>
+                        </div>
+                                <div class="news-meta">
+                                <div class="news-source">
+                                <span>${item.channelName}</span>
+                        </div>
+                        <span class="news-time">- Todo time function retake</span>
+                        </div>
+                    </div>
+                </div> `
+            container.appendChild(card);
+        });
+
+        offset += data.length;
+        if (data.length < limit) {
+            window.removeEventListener("scroll", handleScroll);
+        }
+        document.getElementById("loader").style.display = "none";
+        loading = false;
+    }
+    function handleScroll() {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 150) {
+            loadNews();
+        }
+    }
+    window.addEventListener("DOMContentLoaded", loadNews);
+    document.addEventListener('DOMContentLoaded', function () {
+        const headlines = document.querySelectorAll('.headline');
+
+        headlines.forEach(function (headline) {
+            let fullText = headline.textContent.trim();
+            let truncatedText = fullText.length > 45 ? fullText.substring(0, 45) + '...' : fullText;
+
+            headline.textContent = truncatedText;
+            headline.setAttribute('title', fullText);  // Set full text for hover tooltip
+        });
+    });
+</script>

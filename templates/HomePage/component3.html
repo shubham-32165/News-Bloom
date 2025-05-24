@@ -1,0 +1,792 @@
+
+<!-- HomePage/newsSourceCarousel.html -->
+<style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+        /* Colors - Dark Theme (Default) */
+        --color-text: #f0f0f0;
+        --color-text-secondary: #a0a0a0;
+        --color-text-accent: #8ab4f8;
+        --color-text-tag: #64b5f6;
+        --color-background: #303134;
+        --color-background-accent: #2c2c2c;
+        --color-border: #333;
+        --color-highlight: orange;
+        --color-accent: red;
+
+        /* Spacing */
+        --spacing-xs: 5px;
+        --spacing-sm: 8px;
+        --spacing-md: 15px;
+        --spacing-lg: 20px;
+        
+        /* Sizing */
+        --border-radius-sm: 6px;
+        --border-radius-md: 12px;
+        --border-radius-lg: 20px;
+        
+        /* Typography */
+        --font-size-xs: 12px;
+        --font-size-sm: 13px;
+        --font-size-base: 14px;
+        --font-size-md: 16px;
+        --font-size-lg: 18px;
+        --font-size-xl: 22px;
+        
+        /* Effects */
+        --shadow-sm: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        
+        /* Animations */
+        --transition-fast: 0.2s ease;
+        --transition-medium: 0.5s ease;
+        --transition-slow: 0.8s ease-in-out;
+    }
+
+    /* Light theme variables will be set by JavaScript */
+
+    /* ===== MAIN LAYOUT ===== */
+    .source-carousel-container {
+        position: relative;
+        width: 100%;
+        margin: var(--spacing-lg) 0;
+        padding: 0 var(--spacing-xs);
+        box-sizing: border-box;
+    }
+    
+    .source-carousel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .source-carousel-title {
+        font-size: var(--font-size-xl);
+        font-weight: 500;
+        color: var(--color-text);
+        position: relative;
+        margin: 0;
+    }
+    
+    .source-title-animation {
+        background-color: var(--color-accent);
+        height: 2px;
+        width: 0;
+        margin-top: var(--spacing-xs);
+        transition: width var(--transition-slow);
+    }
+    
+    .source-carousel-view-all {
+        color: var(--color-text-accent);
+        text-decoration: none;
+        font-size: var(--font-size-base);
+        transition: opacity var(--transition-fast), transform var(--transition-fast);
+    }
+    
+    .source-carousel-view-all:hover {
+        opacity: 0.9;
+        text-decoration: underline;
+        transform: translateX(2px);
+    }
+    
+    .source-carousel {
+        display: flex;
+        transition: transform var(--transition-medium);
+        overflow-x: hidden;
+        gap: var(--spacing-lg);
+        padding-bottom: var(--spacing-xs); /* Space for box-shadow overflow */
+    }
+    
+    /* ===== SOURCE CARDS ===== */
+    .source-card {
+        flex: 0 0 calc(33.333% - var(--spacing-lg));
+        min-width: 280px;
+        background-color: var(--color-background);
+        border-radius: var(--border-radius-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .source-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+    
+    .source-header {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--spacing-md);
+        align-items: center;
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .channel-wrapper {
+        position: relative;
+    }
+    
+    .source-logo {
+        font-weight: bold;
+        font-size: var(--font-size-lg);
+        color: var(--color-text);
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+    }
+    
+    .source-animation {
+        background-color: var(--color-accent);
+        height: 2px;
+        width: 0;
+        margin-top: 3px;
+        transition: width var(--transition-medium);
+    }
+    
+    .channel-wrapper:hover .source-animation,
+    .channel-wrapper:focus-within .source-animation {
+        width: 100%;
+    }
+    
+    .follow-btn {
+        background-color: transparent;
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-text-secondary);
+        border-radius: var(--border-radius-lg);
+        padding: 6px 15px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: var(--font-size-base);
+        transition: background-color var(--transition-fast), transform var(--transition-fast);
+    }
+    
+    .follow-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.03);
+    }
+    
+    .follow-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .follow-btn .star {
+        margin-right: 6px;
+        color: var(--color-accent);
+    }
+    
+    .follow-btn .hidden {
+        display: none;
+    }
+    
+    .category {
+        background-color: var(--color-background-accent);
+        padding: 10px 15px;
+        font-size: var(--font-size-base);
+        font-weight: bold;
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    /* ===== NEWS ITEMS ===== */
+    .news-item {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--color-border);
+        display: flex;
+        cursor: pointer;
+        transition: background-color var(--transition-fast);
+    }
+    
+    .news-item:last-child {
+        border-bottom: none;
+    }
+    
+    .news-item:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .news-content {
+        flex: 1;
+        padding-right: var(--spacing-sm);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .news-tag {
+        color: var(--color-text-tag);
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--spacing-sm);
+        display: inline-block;
+    }
+    
+    .news-headline {
+        font-weight: bold;
+        font-size: var(--font-size-md);
+        line-height: 1.4;
+        color: var(--color-text);
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: color var(--transition-fast);
+    }
+    
+    .news-headline:hover {
+        text-decoration: underline;
+        text-decoration-color: var(--color-highlight);
+    }
+    
+    .news-image {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--border-radius-sm);
+        object-fit: cover;
+        flex-shrink: 0;
+        transition: transform var(--transition-fast);
+    }
+    
+    .news-item:hover .news-image {
+        transform: scale(1.05);
+    }
+    
+    .source-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        margin-top: auto; /* Push to bottom */
+        border-top: 1px solid var(--color-border);
+    }
+    
+    /* ===== NAVIGATION ===== */
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        z-index: 10;
+        pointer-events: none; /* Only allow clicks on buttons */
+        left: 0;
+    }
+    
+    .nav-btn {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: var(--font-size-lg);
+        transition: all var(--transition-fast);
+        border: none;
+        pointer-events: auto; /* Re-enable pointer events */
+        opacity: 0.8;
+    }
+    
+    .nav-btn:hover {
+        background-color: rgba(0, 0, 0, 0.9);
+        opacity: 1;
+    }
+    
+    .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    
+    .prev-btn {
+        margin-left: -20px;
+    }
+    
+    .next-btn {
+        margin-right: -20px;
+    }
+    
+    /* ===== LOADING STATE ===== */
+    .source-loader {
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-secondary);
+        font-style: italic;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 0.9; }
+        100% { opacity: 0.6; }
+    }
+    
+    .source-loader {
+        animation: pulse 1.5s infinite;
+    }
+    
+    /* ===== POPUP ===== */
+    .popup {
+        position: fixed;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 8px 25px;
+        border-radius: 20px;
+        font-size: var(--font-size-md);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 100000;
+        color: var(--color-background);
+        background-color: var(--color-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: var(--font-size-lg);
+        transition: opacity 0.5s ease-in-out, transform 0.8s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .popup.show {
+        opacity: 1;
+    }
+    
+    /* ===== ERROR STATE ===== */
+    .source-error {
+        width: 100%;
+        padding: var(--spacing-lg);
+        text-align: center;
+        color: var(--color-text-secondary);
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--color-border);
+    }
+    
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 1200px) {
+        .source-card {
+            flex: 0 0 calc(50% - var(--spacing-lg));
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .source-card {
+            flex: 0 0 calc(100% - var(--spacing-xs));
+            min-width: 250px;
+        }
+        
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            font-size: var(--font-size-base);
+        }
+        
+        .source-carousel-title {
+            font-size: var(--font-size-lg);
+        }
+    }
+    
+    /* ===== ACCESSIBILITY ===== */
+    .source-logo:focus,
+    .news-headline:focus,
+    .source-carousel-view-all:focus,
+    .follow-btn:focus,
+    .nav-btn:focus {
+        outline: 2px solid var(--color-text-accent);
+        outline-offset: 2px;
+    }
+    
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+        .source-carousel,
+        .source-title-animation,
+        .source-animation,
+        .popup,
+        .news-image,
+        .follow-btn {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+        }
+        
+        .source-card:hover {
+            transform: none !important;
+        }
+    }
+</style>
+
+<div class="source-carousel-container">
+    <div class="source-carousel-header">
+        <div>
+            <h2 class="source-carousel-title">Sources For You</h2>
+            <div class="source-title-animation"></div>
+        </div>
+        <a href="/newsShowCase" class="source-carousel-view-all" aria-label="View all news sources">View all sources</a>
+    </div>
+    
+    <div class="popup" id="source-popup" role="alert" aria-live="polite">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16" style="scale: 1.1;" aria-hidden="true">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+        </svg>
+        Login to follow channel
+    </div>
+    
+    <div class="source-carousel" aria-label="News sources carousel">
+        <!-- Loading placeholders -->
+        <div class="source-card source-loader" aria-label="Loading news sources">
+            Loading sources...
+        </div>
+        <div class="source-card source-loader" aria-hidden="true">
+            Loading sources...
+        </div>
+        <div class="source-card source-loader" aria-hidden="true">
+            Loading sources...
+        </div>
+    </div>
+    
+    <div class="carousel-nav">
+        <button class="nav-btn prev-btn" disabled aria-label="Previous sources">❮</button>
+        <button class="nav-btn next-btn" aria-label="Next sources">❯</button>
+    </div>
+</div>
+
+<script>
+    // Initialize variables
+    let currentPosition = 0;
+    let sourceData = [];
+    let cardsToShow = 3;
+    let cardWidth = 320;
+    let isAnimating = false;
+    
+    // Responsive settings based on viewport
+    function updateCardsToShow() {
+        const viewportWidth = window.innerWidth;
+        if (viewportWidth < 768) {
+            cardsToShow = 1;
+        } else if (viewportWidth < 1200) {
+            cardsToShow = 2;
+        } else {
+            cardsToShow = 3;
+        }
+        
+        // Update navigation if data is already loaded
+        if (sourceData.length > 0) {
+            updateNavButtons();
+        }
+    }
+    
+    // Set theme variables based on current theme
+    function updateThemeVariables() {
+        if (document.querySelector('body').classList.contains('dark-theme')) {
+            document.documentElement.style.setProperty('--color-text', '#f0f0f0');
+            document.documentElement.style.setProperty('--color-background', '#303134');
+            document.documentElement.style.setProperty('--color-background-accent', '#2c2c2c');
+        } else {
+            document.documentElement.style.setProperty('--color-text', '#202124');
+            document.documentElement.style.setProperty('--color-text-secondary', '#5f6368');
+            document.documentElement.style.setProperty('--color-text-accent', '#1a73e8');
+            document.documentElement.style.setProperty('--color-text-tag', '#1967d2');
+            document.documentElement.style.setProperty('--color-background', '#ffffff');
+            document.documentElement.style.setProperty('--color-background-accent', '#f0f0f0');
+            document.documentElement.style.setProperty('--color-border', '#dadce0');
+        }
+    }
+    
+    // Fetch news sources from API with error handling and retry
+    async function fetchNewsSources(retry = 2) {
+        try {
+            const response = await fetch('/api/newsShowCase?offset=0&limit=10');
+            if (!response.ok) {
+                throw new Error('Failed to fetch sources');
+            }
+            
+            sourceData = await response.json();
+            renderSourceCards();
+        } catch (error) {
+            console.error('Error fetching news sources:', error);
+            
+            if (retry > 0) {
+                // Retry with exponential backoff
+                setTimeout(() => {
+                    fetchNewsSources(retry - 1);
+                }, 1000 * (3 - retry));
+            } else {
+                // Show error state after retries
+                document.querySelector('.source-carousel').innerHTML = 
+                    '<div class="source-card source-error">Unable to load news sources. Please try again later.</div>';
+            }
+        }
+    }
+    
+    // Render source cards
+    function renderSourceCards() {
+        if (!sourceData || sourceData.length === 0) return;
+        
+        const carousel = document.querySelector('.source-carousel');
+        const following_newschannels = {{ session.get('following', {}).get('newschannels',[]) | tojson }} || [];
+        
+        // Clear loading placeholders
+        carousel.innerHTML = '';
+        console.log("SourcceData",sourceData);
+        // Create and append source cards
+        sourceData.forEach((source, index) => {
+            const card = document.createElement('div');
+            card.className = 'source-card';
+            card.setAttribute('data-index', index);
+            
+            // Build articles HTML
+            let articlesHTML = '';
+            const articleCount = Math.min(3, source.articles?.length || 0);
+            
+            if (articleCount === 0) {
+                articlesHTML = '<div class="news-item" style="text-align: center; color: var(--color-text-secondary);">No articles available</div>';
+            } else {
+                for (let i = 0; i < articleCount; i++) {
+                    const article = source.articles[i];
+                    articlesHTML += `
+                        <div class="news-item" onclick="window.location.href='/info/${source.name}/${article._id}'">
+                            <div class="news-content">
+                                <span class="news-tag">${article.tag || 'News'}</span>
+                                <a class="news-headline" href="/info/${source.name}/${article._id}" aria-label="${article.headline}">${article.headline}</a>
+                            </div>
+                            <img src="/api/placeholder/80/80" alt="${article.headline}" class="news-image" loading="lazy">
+                        </div>
+                    `;
+                }
+            }
+            
+            // Build the complete card HTML
+            card.innerHTML = `
+                <div class="source-header">
+                    <div class="channel-wrapper">
+                        <a href="/newsShowCase/${source.name}" class="source-logo">${source.name}</a>
+                        <div class="source-animation"></div>
+                    </div>
+                    <button class="follow-btn" aria-label="${following_newschannels.includes(source.name) ? 'Following' : 'Follow'} ${source.name}">
+                        <span class="star">★</span>
+                        <span class="${following_newschannels.includes(source.name) ? 'hidden' : ''}">Follow</span>
+                    </button>
+                </div>
+                <div class="category">${source.category || 'Top Stories'}</div>
+                ${articlesHTML}
+                <div class="source-footer">
+                    <div>Showcase • Updated recently</div>
+                    <div>⋮</div>
+                </div>
+            `;
+            
+            // Add follow button event listener with error handling
+            const followBtn = card.querySelector('.follow-btn');
+            followBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                handleFollow(event, source._id);
+            });
+            
+            carousel.appendChild(card);
+        });
+        
+        // Get actual card width after rendering
+        updateCardWidth();
+        
+        // Update carousel navigation
+        updateNavButtons();
+        
+        // Animate the title underline
+        setTimeout(() => {
+            document.querySelector('.source-title-animation').style.width = '100%';
+        }, 200);
+    }
+    
+    // Update card width calculation
+    function updateCardWidth() {
+        const sourceCards = document.querySelectorAll('.source-card');
+        if (sourceCards.length > 0) {
+            // Get the first card's computed width including margin
+            const computedStyle = window.getComputedStyle(sourceCards[0]);
+            const marginRight = parseInt(computedStyle.marginRight) || 0;
+            
+            // Update cardWidth with actual value plus margin
+            cardWidth = sourceCards[0].offsetWidth + marginRight;
+        }
+    }
+    
+    // Handle carousel navigation with improved animation
+    function navigateCarousel(direction) {
+        if (isAnimating) return;
+        
+        const carousel = document.querySelector('.source-carousel');
+        const sourceCards = document.querySelectorAll('.source-card');
+        const maxPosition = Math.max(0, sourceCards.length - cardsToShow);
+        
+        // Calculate new position with bounds checking
+        const newPosition = Math.max(0, Math.min(maxPosition, currentPosition + direction));
+        
+        // Only animate if position actually changes
+        if (newPosition !== currentPosition) {
+            isAnimating = true;
+            currentPosition = newPosition;
+            
+            // Apply transform with calculated card width
+            carousel.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
+            
+            // Update buttons immediately
+            updateNavButtons();
+            
+            // Reset animating flag after transition completes
+            setTimeout(() => {
+                isAnimating = false;
+            }, 500);
+        }
+    }
+    
+    // Update navigation buttons state
+    function updateNavButtons() {
+        const sourceCards = document.querySelectorAll('.source-card');
+        const maxPosition = Math.max(0, sourceCards.length - cardsToShow);
+        
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        
+        prevBtn.disabled = currentPosition === 0;
+        nextBtn.disabled = currentPosition >= maxPosition;
+        
+        // Add appropriate ARIA attributes
+        prevBtn.setAttribute('aria-disabled', currentPosition === 0);
+        nextBtn.setAttribute('aria-disabled', currentPosition >= maxPosition);
+    }
+    
+    // Handle follow button click with improved error handling
+    async function handleFollow(event, channelId) {
+        try {
+            const res = await fetch('/auth/currentlyLoggedIn');
+            const data = await res.json();
+            
+            if (data.statusCode !== 200) {
+                showSourcePopup();
+                return;
+            }
+            
+            // Find the correct button that was clicked
+            const button = event.target.closest('.follow-btn');
+            button.disabled = true; // Prevent multiple clicks
+            
+            const response = await fetch('/api/newsShowCase', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ _id: channelId })
+            });
+            
+            const result = await response.json();
+            const span = button.querySelector('span:not(.star)');
+            
+            if (result.message === 'Follow') {
+                span.classList.add('hidden');
+                button.setAttribute('aria-label', 'Following this channel');
+            } else {
+                span.classList.remove('hidden');
+                button.setAttribute('aria-label', 'Follow this channel');
+            }
+            
+            button.disabled = false;
+        } catch (error) {
+            console.error('Error following source:', error);
+            showSourcePopup('Error following channel. Please try again.');
+        }
+    }
+    
+    // Show login popup with custom message support
+    function showSourcePopup(message = 'Login to follow channel') {
+        const popup = document.getElementById('source-popup');
+        
+        // Update message if provided
+        if (message !== 'Login to follow channel') {
+            popup.textContent = message;
+        }
+        
+        popup.classList.add('show');
+        
+        // Animate popup sliding up
+        setTimeout(() => {
+            popup.style.transform = 'translateX(-50%) translateY(-65px)';
+        }, 100);
+        
+        // Hide popup after delay
+        setTimeout(() => {
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.transform = 'translateX(-50%)';
+            }, 500);
+        }, 2600);
+    }
+    
+    // Handle window resize events
+    function handleResize() {
+        updateCardsToShow();
+        updateCardWidth();
+        
+        // Reset position if needed
+        const sourceCards = document.querySelectorAll('.source-card');
+        const maxPosition = Math.max(0, sourceCards.length - cardsToShow);
+        
+        if (currentPosition > maxPosition) {
+            currentPosition = maxPosition;
+            const carousel = document.querySelector('.source-carousel');
+            carousel.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
+        }
+        
+        updateNavButtons();
+    }
+    
+    // Set up event listeners
+    document.querySelector('.prev-btn').addEventListener('click', () => navigateCarousel(-1));
+    document.querySelector('.next-btn').addEventListener('click', () => navigateCarousel(1));
+    
+    // Add keyboard navigation support
+    document.addEventListener('keydown', (event) => {
+        const carousel = document.querySelector('.source-carousel-container');
+        if (carousel.contains(document.activeElement) || carousel === document.activeElement) {
+            if (event.key === 'ArrowLeft') {
+                navigateCarousel(-1);
+                event.preventDefault();
+            } else if (event.key === 'ArrowRight') {
+                navigateCarousel(1);
+                event.preventDefault();
+            }
+        }
+    });
+    
+    // Add resize listener with debounce
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleResize, 250);
+    });
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        updateThemeVariables();
+        updateCardsToShow();
+        fetchNewsSources();
+    });
+    
+    // Listen for theme changes (if applicable)
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.classList.contains('dark-theme') || 
+                mutation.target.classList.contains('light-theme')) {
+                updateThemeVariables();
+            }
+        });
+    });
+    
+    observer.observe(document.body, { 
+        attributes: true, 
+        attributeFilter: ['class'] 
+    });
+</script>
