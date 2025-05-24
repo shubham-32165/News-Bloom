@@ -1,0 +1,32 @@
+.weather-macro-container{
+    width: 100%;
+    height:100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+}
+.weather-macro-day{
+    color: white;
+    line-height: 1;
+    font-size: 12px;
+    padding-top: 2px;
+}
+.weather-macro-small-weather-container{
+    position: relative;
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.weather-macro-min-max-temp{
+    line-height: 1;
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    gap: 7px;
+    font-weight: 900;
+}

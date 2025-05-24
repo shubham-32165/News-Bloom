@@ -1,0 +1,236 @@
+.top-bar {
+    color: #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1.5% 5%;
+    background-color: #fff7e0;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    /* background-color: white; */
+    background-color: transparent;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+}
+
+.search-icon {
+    color: #555;
+    margin-right: 8px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+}
+
+/* Logo Area */
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    justify-content: center;
+}
+
+.logo-part1 {
+    font-size: 3em;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Right section */
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sign-in {
+    color: #333;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+.sign-in:hover {
+    background-color: #333;
+    color: #fffdf9;
+}
+
+.toggle-mode {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    background-color: #fff7e0;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    gap: 5rem;
+}
+
+.nav-left a, .nav-right a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 15px;
+    position: relative;
+}
+.nav-left a + div, .nav-right a + div{
+    width: 0px;
+    height: 2px;
+    background-color: #ff512f;
+    transition: all 0.4s ease;
+}
+
+.nav-left a:hover + div, .nav-right a:hover + div{
+    color: #ff512f;
+    width: 100%;
+}
+
+.divider {
+    height: 25px;
+    width: 2px;
+    background-color: #ccc;
+}
+
+/* States Dropdown */
+.states-dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    background-color: #fff7e0;
+    z-index: 999;
+    padding: 1rem 4rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.states-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.state-item {
+    font-weight: 500;
+    color: #333;
+    padding: 4px 0;
+    cursor: pointer;
+}
+.state-item + div{
+    width: 0px;
+    height: 2px;
+    background-color: #ff512f;
+    transition: all 0.3s ease-in-out;
+}
+.state-item:hover + div{
+    background-color: #ff512f;
+    width: 100%;
+}
+
+/* Dark Theme */
+body.dark-theme {
+    background-color: #121212;
+    color: #fffdf9;
+}
+
+body.dark-theme .top-bar,
+body.dark-theme .navbar {
+    background-color: #1e1e1e;
+    color: #fffdf9;
+}
+
+body.dark-theme .search-box {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-theme .search-icon {
+    color: #aaa;
+}
+
+body.dark-theme .search-box input {
+    color: #fffdf9;
+}
+
+body.dark-theme .sign-in {
+    color: #ccc;
+    border-color: #ccc;
+}
+
+body.dark-theme .sign-in:hover {
+    background-color: #ccc;
+    color: #1e1e1e;
+}
+
+body.dark-theme .toggle-mode {
+    color: #ccc;
+}
+
+body.dark-theme .nav-left a,
+body.dark-theme .nav-right a {
+    color: #fffdf9;
+}
+
+/* body.dark-theme .nav-left a:hover,
+body.dark-theme .nav-right a:hover {
+    color: #ff512f;
+} */
+
+body.dark-theme .states-dropdown {
+    background-color: #1e1e1e;
+    border-top: 1px solid #333;
+}
+
+body.dark-theme .state-item {
+    color: #ddd;
+}
+
+/* body.dark-theme .state-item:hover {
+    color: #ff512f;
+} */
+body.dark-theme .navbar{
+    box-shadow: 0px 8px 10px rgba(255, 255, 255, 0.1);
+}
+
+.states-heading {
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+body.dark-theme .states-heading {
+    color: #1e90ff;
+}
